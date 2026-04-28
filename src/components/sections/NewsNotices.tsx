@@ -1,57 +1,68 @@
 import React from 'react';
 import { useLanguage } from '@/src/context/LanguageContext';
+import { useData } from '@/src/context/DataContext';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { mockNews } from '@/src/data/mockData';
 import { ArrowRight, Bell } from 'lucide-react';
 
-export const NewsNotices = () => {
+export const NewsNotices = ({ onViewAll }: { onViewAll?: () => void }) => {
   const { t } = useLanguage();
+  const { news } = useData();
 
   return (
-    <section className="py-20 bg-stone-50">
+    <section className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6 font-serif">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6 font-primary">
           <div>
-            <h2 className="text-4xl font-bold mb-4">{t('News & Public Notices', 'Nouvelles et avis publics')}</h2>
-            <p className="text-stone-600 max-w-2xl">
+            <h2 className="text-4xl font-serif font-bold mb-4 border-l-4 border-accent pl-6">{t('News & Public Notices', 'Nouvelles et avis publics')}</h2>
+            <p className="text-foreground/70 max-w-2xl font-light">
               {t(
                 'Stay informed about local governance, upcoming developments, and utility notices affecting our town.',
                 'Restez informé sur la gouvernance locale, les développements à venir et les avis d\'utilité publique.'
               )}
             </p>
           </div>
-          <Button variant="ghost" className="group">
+          <Button variant="outline" className="group border-primary/20 hover:bg-primary hover:text-white rounded-none uppercase tracking-widest text-[10px] font-bold" onClick={onViewAll}>
             {t('View All News', 'Toutes les nouvelles')}
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {mockNews.map((item) => (
-            <Card key={item.id} className="border-none shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full bg-white">
-              <CardHeader className="pb-4">
-                <div className="flex justify-between items-start mb-4">
-                  <Badge variant={item.category === 'public-notice' ? 'destructive' : 'secondary'} className="rounded-sm uppercase text-[10px] tracking-widest px-2 py-0.5">
+          {news.slice(0, 3).map((item, idx) => (
+            <Card key={item.id} className="border-none shadow-xl hover:shadow-2xl transition-all group flex flex-col h-full bg-white rounded-none overflow-hidden relative">
+              <div className="absolute top-0 left-0 w-full h-1 bg-accent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+              <div className="h-56 w-full overflow-hidden relative">
+                <img 
+                  src={idx === 0 ? "https://images.unsplash.com/photo-1505144808419-1957a94ca61e?auto=format&fit=crop&q=80&w=800" : (idx === 1 ? "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800" : "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80&w=800")} 
+                  alt={item.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute top-6 left-6">
+                   <Badge className="bg-primary text-white rounded-none uppercase text-[9px] font-black tracking-widest px-3 py-1 border-none shadow-lg">
                     {t(item.category.replace('-', ' '), item.category)}
                   </Badge>
-                  <span className="text-xs text-stone-400 font-mono italic">
-                    {new Date(item.date).toLocaleDateString()}
+                </div>
+              </div>
+              <CardHeader className="p-8 pb-4">
+                <div className="flex justify-between items-start mb-4">
+                  <span className="text-[10px] font-mono font-black uppercase tracking-widest text-stone-400 border-b border-accent/20 pb-1">
+                    {new Date(item.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                   </span>
                 </div>
-                <CardTitle className="text-xl font-serif leading-tight group-hover:text-primary transition-colors cursor-pointer">
+                <CardTitle className="text-2xl font-serif font-black italic tracking-tight leading-tight group-hover:text-accent transition-colors cursor-pointer line-clamp-2 text-primary">
                   {item.title}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-stone-600 text-sm leading-relaxed line-clamp-3">
+              <CardContent className="px-8 pb-4 flex-grow">
+                <p className="text-stone-500 text-sm leading-relaxed line-clamp-3 font-light italic">
                   {item.summary}
                 </p>
               </CardContent>
-              <CardFooter className="pt-0 border-t border-stone-100 mt-4 h-16 flex items-center">
-                 <Button variant="link" className="px-0 text-primary font-semibold text-sm">
-                    {t('Read More', 'Lire la suite')}
+              <CardFooter className="px-8 pb-8 pt-4">
+                 <Button variant="link" className="p-0 h-auto text-primary font-black text-[10px] uppercase tracking-[0.2em] hover:text-accent transition-colors group-hover:gap-2">
+                    {t('Read Full Disclosure', 'Lire le rapport')} <ArrowRight className="h-3 w-3 ml-2 transition-transform group-hover:translate-x-1" />
                  </Button>
               </CardFooter>
             </Card>

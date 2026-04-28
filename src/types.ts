@@ -6,6 +6,7 @@ export interface Event {
   date: string;
   location: string;
   type: 'community' | 'council' | 'festival';
+  image?: string;
 }
 
 export interface NewsItem {
@@ -15,6 +16,7 @@ export interface NewsItem {
   content: string;
   date: string;
   category: 'public-notice' | 'improvement' | 'news';
+  image?: string;
 }
 
 export interface Document {
